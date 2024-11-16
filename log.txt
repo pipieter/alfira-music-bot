@@ -1,0 +1,9 @@
+
+> dunesbard@1.0.0 start
+> npx tsx src/main.ts
+
+{
+  access_token: 'BQBe1_xOEHRyIiN2RMP-_miVmgnZZyt96BIY_qsFfkwOLnbEZOURXXacKscWnc1stLVw9tsHWORZfl7VB6lvR4bK-r-uUe955v4MqvvXNXoFHRaNSwY',
+  token_type: 'Bearer',
+  expires_in: 3600
+}

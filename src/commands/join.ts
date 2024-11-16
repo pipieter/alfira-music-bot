@@ -1,9 +1,10 @@
-import { Interaction, SlashCommandBuilder } from "discord.js";
+import { Channel, Interaction, SlashCommandBuilder } from "discord.js";
 import { t } from "i18next";
 
-import { JoinUserVoiceChannel, JoinVoiceChannel } from "../bot/channel";
+import { GetUserVoiceChannel } from "../bot/channel";
 import { Command } from "../bot/command";
 import { CommandName } from "../commands";
+import { Services } from "../services/services";
 
 export class JoinCommand extends Command {
   public information(): object {
@@ -22,17 +23,29 @@ export class JoinCommand extends Command {
   }
 
   public async handle(interaction: Interaction): Promise<void> {
-    if (!interaction.isRepliable()) return;
     if (!interaction.isChatInputCommand()) return;
 
-    const channel = interaction.options.getChannel("channel");
+    let channel: Channel = interaction.options.getChannel("channel") as Channel;
+    if (!channel) {
+      const user = interaction.user;
+      const guild = interaction.guild;
+      channel = await GetUserVoiceChannel(user, guild);
 
-    const voiceChannel = channel
-      ? await JoinVoiceChannel(interaction, channel.id)
-      : await JoinUserVoiceChannel(interaction);
-
-    if (voiceChannel) {
-      interaction.reply(`Joining voice channel <#${voiceChannel.id}>`);
+      if (!channel) {
+        interaction.reply(
+          "No channel provided and user is not in a voice channel."
+        );
+        return;
+      }
     }
+
+    if (!channel.isVoiceBased()) {
+      interaction.reply("Channel is not a voice channel");
+      return;
+    }
+
+    interaction.reply(`Joining channel <#${channel.id}>`);
+    const guild = Services.guilds.get(interaction.guild.id);
+    guild.voice.join(channel);
   }
 }

@@ -1,16 +1,16 @@
 import { Command } from "./bot/command";
-import { EchoCommand } from "./commands/echo";
 import { JoinCommand } from "./commands/join";
 import { PingCommand } from "./commands/ping";
+import { PlayCommand } from "./commands/play";
 
 export enum CommandName {
   Ping = "ping",
-  Echo = "echo",
   Join = "join",
+  Play = "play",
 }
 
 export const Commands: Map<CommandName, Command> = new Map([
   [CommandName.Ping, new PingCommand()],
-  [CommandName.Echo, new EchoCommand()],
   [CommandName.Join, new JoinCommand()],
+  [CommandName.Play, new PlayCommand()],
 ]);

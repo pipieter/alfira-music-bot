@@ -10,26 +10,10 @@ import {
 import { CommandName, Commands } from "../commands";
 import { logger } from "../logger";
 
-export class BotClient {
-  private token: string;
+export class ClientService {
+  private readonly client: Client;
 
-  private client: Client;
-
-  public constructor(token: string) {
-    this.token = token;
-  }
-
-  public async run(): Promise<void> {
-    await this.setupClient();
-
-    logger.info("Logging in to client and starting bot.");
-
-    this.client.login(this.token);
-  }
-
-  private async setupClient() {
-    logger.info("Setting up client.");
-
+  constructor() {
     const intents = new IntentsBitField();
     intents.add(IntentsBitField.Flags.Guilds);
     intents.add(IntentsBitField.Flags.GuildVoiceStates);
@@ -41,9 +25,29 @@ export class BotClient {
     this.client.on(Events.InteractionCreate, this.onInteraction);
   }
 
-  private async onClientReady(client: Client) {
-    logger.info("Client is ready.");
+  public get() {
+    return this.client;
+  }
 
+  public async run() {
+    const token = this.getToken();
+
+    if (!token) {
+      logger.error("Could not retrieve bot token. Stopping bot.");
+      return;
+    }
+
+    logger.info("Starting bot.");
+    this.client.login(token);
+  }
+
+  private getToken() {
+    const token = process.env.DISCORD_BOT_TOKEN;
+    if (!token) return null;
+    return token;
+  }
+
+  private async onClientReady(client: Client) {
     logger.info("Updating the commands for all guilds.");
 
     const commandsInformation = [];
@@ -68,10 +72,7 @@ export class BotClient {
   }
 
   private async onInteraction(interaction: Interaction): Promise<void> {
-    // Don't interact with other bots
     if (interaction.user.bot) return;
-
-    // Only support commands for now
     if (!interaction.isCommand()) return;
 
     const commandName = interaction.commandName;
@@ -91,9 +92,5 @@ export class BotClient {
         logger.error(e.stack);
       }
     }
-  }
-
-  public getClient() {
-    return this.client;
   }
 }
