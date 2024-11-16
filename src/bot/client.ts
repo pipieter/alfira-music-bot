@@ -1,4 +1,11 @@
-import { Client, Events, Interaction, REST, Routes } from "discord.js";
+import {
+  Client,
+  Events,
+  IntentsBitField,
+  Interaction,
+  REST,
+  Routes,
+} from "discord.js";
 
 import { CommandName, Commands } from "../commands";
 import { logger } from "../logger";
@@ -23,7 +30,12 @@ export class BotClient {
   private async setupClient() {
     logger.info("Setting up client.");
 
-    this.client = new Client({ intents: [] });
+    const intents = new IntentsBitField();
+    intents.add(IntentsBitField.Flags.Guilds);
+    intents.add(IntentsBitField.Flags.GuildVoiceStates);
+    intents.add(IntentsBitField.Flags.GuildMembers);
+
+    this.client = new Client({ intents: intents });
 
     this.client.on(Events.ClientReady, this.onClientReady);
     this.client.on(Events.InteractionCreate, this.onInteraction);
@@ -70,6 +82,14 @@ export class BotClient {
       return;
     }
 
-    command.handle(interaction);
+    try {
+      command.handle(interaction);
+    } catch (e: any) {
+      logger.error(`Could not complete request '${commandName}':`);
+      if (e instanceof Error) {
+        logger.error(e.message);
+        logger.error(e.stack);
+      }
+    }
   }
 }
