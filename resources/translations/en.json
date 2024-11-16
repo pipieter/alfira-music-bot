@@ -1,0 +1,13 @@
+{
+  "commands": {
+    "ping": {
+      "description": "Check if the bot is still alive."
+    },
+    "echo": {
+      "description": "Echo a message back to the user.",
+      "input": {
+        "message": "The message to be returned."
+      }
+    }
+  }
+}
