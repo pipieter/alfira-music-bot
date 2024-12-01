@@ -9,6 +9,7 @@
   },
   "scripts": {
     "start": "npx tsx src/main.ts",
+    "watch": "npx tsx watch --include src/**/*.ts src/main.ts",
     "prettier": "npx prettier src/**/*.ts --write",
     "lint": "eslint src/**/*.ts --report-unused-disable-directives --max-warnings 0 --fix",
     "format": "npm run lint & npm run prettier"
@@ -26,6 +27,7 @@
     "libsodium-wrappers": "0.7.15",
     "luxon": "3.5.0",
     "typescript": "5.6.3",
+    "youtube-search-api": "1.2.2",
     "ytdl-core": "4.11.5"
   },
   "devDependencies": {

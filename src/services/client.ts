@@ -1,5 +1,7 @@
 import {
+  ButtonInteraction,
   Client,
+  CommandInteraction,
   Events,
   IntentsBitField,
   Interaction,
@@ -7,7 +9,10 @@ import {
   Routes,
 } from "discord.js";
 
-import { CommandName, Commands } from "../commands";
+import {
+  ButtonInteractionHandlers,
+  CommandInteractionHandlers,
+} from "../handlers";
 import { logger } from "../logger";
 
 export class ClientService {
@@ -48,11 +53,12 @@ export class ClientService {
   }
 
   private async onClientReady(client: Client) {
+    logger.info("Client is ready.");
     logger.info("Updating the commands for all guilds.");
 
     const commandsInformation = [];
 
-    for (const command of Commands.values()) {
+    for (const command of CommandInteractionHandlers) {
       commandsInformation.push(command.information());
     }
 
@@ -71,26 +77,43 @@ export class ClientService {
     }
   }
 
-  private async onInteraction(interaction: Interaction): Promise<void> {
-    if (interaction.user.bot) return;
-    if (!interaction.isCommand()) return;
-
-    const commandName = interaction.commandName;
-    const command = Commands.get(commandName as CommandName);
-
-    if (!command) {
-      logger.error(`Unidentified command: '${commandName}'`);
-      return;
-    }
-
-    try {
-      command.handle(interaction);
-    } catch (e: unknown) {
-      logger.error(`Could not complete request '${commandName}':`);
-      if (e instanceof Error) {
-        logger.error(e.message);
-        logger.error(e.stack);
+  private static async onCommandInteraction(
+    interaction: CommandInteraction
+  ): Promise<void> {
+    for (const handler of CommandInteractionHandlers) {
+      if (handler.shouldHandle(interaction)) {
+        return handler.handle(interaction);
       }
     }
+
+    logger.error(`Could not handle command ${interaction.commandName}`);
+  }
+
+  private static async onButtonInteraction(
+    interaction: ButtonInteraction
+  ): Promise<void> {
+    for (const handler of ButtonInteractionHandlers) {
+      if (handler.shouldHandle(interaction)) {
+        return handler.handle(interaction);
+      }
+    }
+
+    logger.error(`Could not handle button ${interaction.customId}`);
+  }
+
+  private async onInteraction(interaction: Interaction): Promise<void> {
+    if (interaction.user.bot) return;
+
+    if (interaction.isCommand()) {
+      return ClientService.onCommandInteraction(interaction);
+    }
+
+    if (interaction.isButton()) {
+      return ClientService.onButtonInteraction(interaction);
+    }
+
+    logger.error(
+      `Could not handle ${interaction.type} interaction from ${interaction.user.globalName}`
+    );
   }
 }

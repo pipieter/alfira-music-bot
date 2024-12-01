@@ -1,16 +1,17 @@
-import { Channel, Interaction, SlashCommandBuilder } from "discord.js";
+import { Channel, CommandInteraction, SlashCommandBuilder } from "discord.js";
 import { t } from "i18next";
 
-import { GetUserVoiceChannel } from "../bot/channel";
-import { Command } from "../bot/command";
-import { CommandName } from "../commands";
-import { Services } from "../services/services";
+import { GetUserVoiceChannel } from "../../bot/channel";
+import { Services } from "../../services/services";
+import { Command, CommandInteractionHandler } from "../handler";
 
-export class JoinCommand extends Command {
+export class JoinCommandHandler extends CommandInteractionHandler {
+  public command: Command = Command.Join;
+
   public information(): object {
     const builder = new SlashCommandBuilder();
 
-    builder.setName(CommandName.Join);
+    builder.setName(Command.Join);
     builder.setDescription(t("commands.join.description"));
     builder.addChannelOption((option) => {
       option.setName("channel");
@@ -22,7 +23,7 @@ export class JoinCommand extends Command {
     return builder.toJSON();
   }
 
-  public async handle(interaction: Interaction): Promise<void> {
+  public async handle(interaction: CommandInteraction): Promise<void> {
     if (!interaction.isChatInputCommand()) return;
 
     let channel: Channel = interaction.options.getChannel("channel") as Channel;

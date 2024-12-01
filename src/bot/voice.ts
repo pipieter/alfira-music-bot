@@ -73,7 +73,9 @@ export class VoicePresence {
 
     connection.subscribe(player);
 
-    player.on("stateChange", this.onStageChange);
+    player.on("stateChange", (_, state) => {
+      VoicePresence.onStageChange(this, state);
+    });
     player.play(resource);
   }
 
@@ -89,9 +91,12 @@ export class VoicePresence {
     // TODO
   }
 
-  public async onStageChange(_prev: AudioPlayerState, curr: AudioPlayerState) {
-    if (curr.status === AudioPlayerStatus.Idle) {
-      this.next();
+  public static async onStageChange(
+    presence: VoicePresence,
+    state: AudioPlayerState
+  ) {
+    if (state.status === AudioPlayerStatus.Idle) {
+      presence.next();
     }
   }
 }
