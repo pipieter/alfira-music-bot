@@ -1,7 +1,8 @@
 import { CommandInteraction, SlashCommandBuilder } from "discord.js";
-import { Command } from "./command";
-import { GetUserVoiceChannel } from "../bot/channel";
+
 import { Bot } from "../bot";
+import { GetUserVoiceChannel } from "../bot/channel";
+import { Command } from "./command";
 
 export class PlayCommand extends Command {
   public information(): object {
@@ -18,6 +19,7 @@ export class PlayCommand extends Command {
 
     return builder.toJSON();
   }
+
   public async execute(interaction: CommandInteraction, bot: Bot): Promise<void> {
     if (!interaction.isChatInputCommand()) return;
 

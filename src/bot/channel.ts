@@ -9,9 +9,7 @@ export async function GetUserVoiceChannel(
   return member.voice.channel;
 }
 
-export async function GetCurrentVoiceChannel(
-  guild: Guild
-): Promise<VoiceBasedChannel | null> {
+export async function GetCurrentVoiceChannel(guild: Guild): Promise<VoiceBasedChannel | null> {
   const connection = getVoiceConnection(guild.id);
   if (!connection) {
     return null;

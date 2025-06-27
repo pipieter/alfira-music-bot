@@ -1,5 +1,5 @@
-import { Client, CommandInteraction } from "discord.js";
-import DisTube from "distube";
+import { CommandInteraction } from "discord.js";
+
 import { Bot } from "../bot";
 
 export abstract class Command {
