@@ -1,7 +1,7 @@
-import { Client, CommandInteraction, Interaction, SlashCommandBuilder } from "discord.js";
+import { CommandInteraction, SlashCommandBuilder } from "discord.js";
 import { Command } from "./command";
-import DisTube, { Song, SongInfo } from "distube";
 import { GetUserVoiceChannel } from "../bot/channel";
+import { Bot } from "../bot";
 
 export class PlayCommand extends Command {
   public information(): object {
@@ -18,18 +18,14 @@ export class PlayCommand extends Command {
 
     return builder.toJSON();
   }
-  public async execute(
-    interaction: CommandInteraction,
-    _: Client,
-    distube: DisTube
-  ): Promise<void> {
+  public async execute(interaction: CommandInteraction, bot: Bot): Promise<void> {
     if (!interaction.isChatInputCommand()) return;
 
     const channel = await GetUserVoiceChannel(interaction.user, interaction.guild);
     const search = interaction.options.getString("search");
     console.log(search);
 
-    distube.play(channel, search);
+    bot.distube.play(channel, search);
 
     await interaction.reply(`Queuing song ${search}`);
   }
