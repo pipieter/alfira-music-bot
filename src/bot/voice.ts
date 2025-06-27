@@ -9,12 +9,12 @@ import {
 } from "@discordjs/voice";
 import { ActivityType, Snowflake, VoiceBasedChannel } from "discord.js";
 
-import { YouTube, YoutubeVideo } from "./youtube";
+import { YouTube, YouTubeVideo } from "./youtube";
 import { Bot } from "../bot";
 
 export class VoicePresence {
   private readonly guild: Snowflake;
-  private readonly queue: YoutubeVideo[];
+  private readonly queue: YouTubeVideo[];
 
   constructor(guild: string) {
     this.guild = guild;
@@ -34,7 +34,7 @@ export class VoicePresence {
     });
   }
 
-  public async enqueue(video: YoutubeVideo) {
+  public async enqueue(video: YouTubeVideo) {
     this.queue.push(video);
 
     // If queue was empty, play next

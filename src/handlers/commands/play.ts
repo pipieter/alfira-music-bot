@@ -3,7 +3,7 @@ import { t } from "i18next";
 
 import { GetCurrentVoiceChannel, GetUserVoiceChannel } from "../../bot/channel";
 import { Command, CommandInteractionHandler } from "../handler";
-import { YouTube } from "../../bot/youtube";
+import { YouTube, YouTubeVideo } from "../../bot/youtube";
 import {
   createAudioPlayer,
   createAudioResource,
@@ -33,7 +33,7 @@ export class PlayCommandHandler extends CommandInteractionHandler {
 
     const user = interaction.user;
 
-    const link = interaction.options.getString("search");
+    const search = interaction.options.getString("search");
     const guild = Guilds.get(interaction.guild.id);
 
     const discordGuild = await guild.getGuild(interaction.client);
@@ -41,13 +41,20 @@ export class PlayCommandHandler extends CommandInteractionHandler {
     if (!voiceChannel) {
       const userChannel = await GetUserVoiceChannel(user, discordGuild);
       if (!userChannel) {
-        interaction.reply("User is not in channel");
+        await interaction.reply("User is not in channel");
         return;
       }
       guild.voice.join(userChannel);
     }
 
-    const stream = YouTube.getAudioStream(link);
+    const results = await YouTube.getSearchResults(search, 10);
+    if (results.length === 0) {
+      await interaction.reply(`No results found for '${search}'`);
+      return;
+    }
+
+    const result = results[0];
+    const stream = YouTube.getAudioStream(result.url);
     const player = createAudioPlayer();
     const resource = createAudioResource(stream);
 
@@ -55,8 +62,7 @@ export class PlayCommandHandler extends CommandInteractionHandler {
 
     connection.subscribe(player);
     player.play(resource);
-    // guild.voice.enqueue(video)
-    // interaction.reply("Whoops. Looks like /play is currently disabled!");
-    // guild.voice.enqueue(link);
+
+    await interaction.reply(`Playing ${result.url}`);
   }
 }
