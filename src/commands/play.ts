@@ -1,7 +1,9 @@
-import { CommandInteraction, SlashCommandBuilder } from "discord.js";
+import { CommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
 
 import { Bot } from "../bot";
 import { GetUserVoiceChannel } from "../bot/channel";
+import { YouTube } from "../bot/youtube";
+import { logger } from "../logger";
 import { Command } from "./command";
 
 export class PlayCommand extends Command {
@@ -25,10 +27,31 @@ export class PlayCommand extends Command {
 
     const channel = await GetUserVoiceChannel(interaction.user, interaction.guild);
     const search = interaction.options.getString("search");
-    console.log(search);
+    const results = await YouTube.getSearchResults(search, 1);
 
-    bot.distube.play(channel, search);
+    logger.info(
+      `${interaction.user.username} => /${interaction.commandName} ${JSON.stringify(interaction.options)}`
+    );
 
-    await interaction.reply(`Queuing song ${search}`);
+    if (results.length === 0) {
+      logger.warn(`No results found for '${search}'.`);
+      await interaction.reply(`No results found for ${search}`);
+      return;
+    }
+
+    const result = results[0];
+    logger.info(`Result found for query '${search}': ${result.title} (${result.url})`);
+
+    const embed = new EmbedBuilder();
+    embed.setTitle(result.title);
+    embed.setAuthor({ name: "Added to queue", iconURL: interaction.user.avatarURL() });
+    embed.setThumbnail(result.thumbnail);
+    embed.setURL(result.url);
+    embed.setColor("#5391ba");
+    embed.addFields([{ name: "Channel", value: result.channel }]);
+    embed.addFields([{ name: "Duration", value: result.length }]);
+
+    bot.distube.play(channel, result.url);
+    await interaction.reply({ embeds: [embed] });
   }
 }
