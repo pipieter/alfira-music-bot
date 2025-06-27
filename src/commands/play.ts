@@ -3,7 +3,7 @@ import { CommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.j
 import { Bot } from "../bot";
 import { GetUserVoiceChannel } from "../bot/channel";
 import { YouTube } from "../bot/youtube";
-import { logger } from "../logger";
+import { logging } from "../logging";
 import { Command } from "./command";
 
 export class PlayCommand extends Command {
@@ -29,18 +29,18 @@ export class PlayCommand extends Command {
     const search = interaction.options.getString("search");
     const results = await YouTube.getSearchResults(search, 1);
 
-    logger.info(
+    logging.info(
       `${interaction.user.username} => /${interaction.commandName} ${JSON.stringify(interaction.options)}`
     );
 
     if (results.length === 0) {
-      logger.warn(`No results found for '${search}'.`);
+      logging.warn(`No results found for '${search}'.`);
       await interaction.reply(`No results found for ${search}`);
       return;
     }
 
     const result = results[0];
-    logger.info(`Result found for query '${search}': ${result.title} (${result.url})`);
+    logging.info(`Result found for query '${search}': ${result.title} (${result.url})`);
 
     const embed = new EmbedBuilder();
     embed.setTitle(result.title);

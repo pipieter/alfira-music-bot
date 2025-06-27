@@ -9,7 +9,7 @@ import {
   Interaction,
 } from "discord.js";
 import DisTube from "distube";
-import { logger } from "./logger";
+import { logging } from "./logging";
 import { PlayCommand } from "./commands/play";
 
 const commands = new Collection([["play", new PlayCommand()]]);
@@ -31,7 +31,7 @@ export class Bot extends Client {
   }
 
   private async onClientReady(client: Client) {
-    logger.info("Client is ready.");
+    logging.info("Client is ready.");
     const commandsInformation = [];
 
     for (const command of commands.values()) {
@@ -59,7 +59,7 @@ export class Bot extends Client {
     if (command) {
       return command.execute(interaction, this);
     } else {
-      logger.error(
+      logging.error(
         `Could not handle ${interaction.type} interaction from ${interaction.user.globalName}`
       );
     }

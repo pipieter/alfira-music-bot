@@ -1,11 +1,11 @@
 import "dotenv/config";
-import { logger } from "./logger";
+import { logging } from "./logging";
 import { Bot } from "./bot";
 
 async function main() {
   const token = process.env.DISCORD_BOT_TOKEN;
   if (!token) {
-    logger.error("Could not retrieve bot token. Stopping bot.");
+    logging.error("Could not retrieve bot token. Stopping bot.");
     return;
   }
 
