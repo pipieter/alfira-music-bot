@@ -1,4 +1,4 @@
 export enum Color {
-  Main = 0x0099ff,
+  Main = 0x665027,
   Gray = 0xbbbbbb,
 }

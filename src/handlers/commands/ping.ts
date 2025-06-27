@@ -1,5 +1,4 @@
 import { CommandInteraction, SlashCommandBuilder } from "discord.js";
-import { t } from "i18next";
 
 import { Command, CommandInteractionHandler } from "../handler";
 
@@ -10,7 +9,7 @@ export class PingCommandHandler extends CommandInteractionHandler {
     const builder = new SlashCommandBuilder();
 
     builder.setName(Command.Ping);
-    builder.setDescription(t("commands.ping.description"));
+    builder.setDescription("Ping!");
 
     return builder.toJSON();
   }

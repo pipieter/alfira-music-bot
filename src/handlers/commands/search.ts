@@ -6,10 +6,9 @@ import {
   EmbedBuilder,
   SlashCommandBuilder,
 } from "discord.js";
-import { t } from "i18next";
 
 import { Color } from "../../const";
-import { YouTube } from "../../services/youtube";
+import { YouTube } from "../../bot/youtube";
 import { Command, CommandInteractionHandler } from "../handler";
 
 export class SearchCommandHandler extends CommandInteractionHandler {
@@ -19,10 +18,10 @@ export class SearchCommandHandler extends CommandInteractionHandler {
     const builder = new SlashCommandBuilder();
 
     builder.setName(Command.Search);
-    builder.setDescription(t("commands.search.description"));
+    builder.setDescription("Search for something");
     builder.addStringOption((option) => {
       option.setName("query");
-      option.setDescription(t("commands.search.input.query"));
+      option.setDescription("The thing to search for.");
       option.setRequired(true);
       return option;
     });

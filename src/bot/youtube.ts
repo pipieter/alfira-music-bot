@@ -7,6 +7,7 @@ export class YoutubeVideo {
   public readonly length: string;
   public readonly channel: string;
   public readonly thumbnail: string;
+  public readonly url: string;
 
   constructor(
     id: string,
@@ -20,6 +21,7 @@ export class YoutubeVideo {
     this.length = length;
     this.channel = channel;
     this.thumbnail = thumbnail;
+    this.url = YouTube.getURL(id);
   }
 }
 

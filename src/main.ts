@@ -1,11 +1,8 @@
 import "dotenv/config";
-
-import { Services } from "./services/services";
+import { Bot } from "./bot";
 
 async function main() {
-  Services.setup();
-
-  await Services.client.run();
+  await Bot.run();
 }
 
 main();

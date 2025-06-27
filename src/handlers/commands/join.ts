@@ -2,8 +2,8 @@ import { Channel, CommandInteraction, SlashCommandBuilder } from "discord.js";
 import { t } from "i18next";
 
 import { GetUserVoiceChannel } from "../../bot/channel";
-import { Services } from "../../services/services";
 import { Command, CommandInteractionHandler } from "../handler";
+import { Guilds } from "../../bot/guilds";
 
 export class JoinCommandHandler extends CommandInteractionHandler {
   public command: Command = Command.Join;
@@ -12,10 +12,10 @@ export class JoinCommandHandler extends CommandInteractionHandler {
     const builder = new SlashCommandBuilder();
 
     builder.setName(Command.Join);
-    builder.setDescription(t("commands.join.description"));
+    builder.setDescription("Join the channel.");
     builder.addChannelOption((option) => {
       option.setName("channel");
-      option.setDescription(t("commands.join.input.channel"));
+      option.setDescription("The channel to join");
       option.setRequired(false);
       return option;
     });
@@ -46,7 +46,7 @@ export class JoinCommandHandler extends CommandInteractionHandler {
     }
 
     interaction.reply(`Joining channel <#${channel.id}>`);
-    const guild = Services.guilds.get(interaction.guild.id);
+    const guild = Guilds.get(interaction.guild.id);
     guild.voice.join(channel);
   }
 }

@@ -1,4 +1,5 @@
 import {
+  ActivitiesOptions,
   ButtonInteraction,
   Client,
   CommandInteraction,
@@ -8,15 +9,12 @@ import {
   REST,
   Routes,
 } from "discord.js";
+import { logger } from "./logger";
+import { Guilds } from "./bot/guilds";
+import { CommandInteractionHandlers } from "./handlers";
 
-import {
-  ButtonInteractionHandlers,
-  CommandInteractionHandlers,
-} from "../handlers";
-import { logger } from "../logger";
-
-export class ClientService {
-  private readonly client: Client;
+export class BotClient {
+  public readonly client: Client;
 
   constructor() {
     const intents = new IntentsBitField();
@@ -54,6 +52,8 @@ export class ClientService {
 
   private async onClientReady(client: Client) {
     logger.info("Client is ready.");
+    Guilds.update(client);
+
     logger.info("Updating the commands for all guilds.");
 
     const commandsInformation = [];
@@ -89,31 +89,21 @@ export class ClientService {
     logger.error(`Could not handle command ${interaction.commandName}`);
   }
 
-  private static async onButtonInteraction(
-    interaction: ButtonInteraction
-  ): Promise<void> {
-    for (const handler of ButtonInteractionHandlers) {
-      if (handler.shouldHandle(interaction)) {
-        return handler.handle(interaction);
-      }
-    }
-
-    logger.error(`Could not handle button ${interaction.customId}`);
-  }
-
   private async onInteraction(interaction: Interaction): Promise<void> {
     if (interaction.user.bot) return;
 
     if (interaction.isCommand()) {
-      return ClientService.onCommandInteraction(interaction);
-    }
-
-    if (interaction.isButton()) {
-      return ClientService.onButtonInteraction(interaction);
+      return BotClient.onCommandInteraction(interaction);
     }
 
     logger.error(
       `Could not handle ${interaction.type} interaction from ${interaction.user.globalName}`
     );
   }
+
+  public setStatus(status: ActivitiesOptions) {
+    this.client.user.setActivity(status);
+  }
 }
+
+export const Bot = new BotClient();

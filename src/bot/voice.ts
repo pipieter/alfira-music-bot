@@ -7,37 +7,21 @@ import {
   getVoiceConnection,
   joinVoiceChannel,
 } from "@discordjs/voice";
-import { Channel, Guild } from "discord.js";
+import { ActivityType, Snowflake, VoiceBasedChannel } from "discord.js";
 
-import { Services } from "../services/services";
-import { YouTube } from "../services/youtube";
+import { YouTube, YoutubeVideo } from "./youtube";
+import { Bot } from "../bot";
 
 export class VoicePresence {
-  private guild: string;
-  private queue: string[];
+  private readonly guild: Snowflake;
+  private readonly queue: YoutubeVideo[];
 
   constructor(guild: string) {
     this.guild = guild;
     this.queue = [];
   }
 
-  private async getGuild(): Promise<Guild> {
-    const client = Services.client.get();
-    return client.guilds.fetch(this.guild);
-  }
-
-  private async getChannel(channelId: string): Promise<Channel | null> {
-    const guild = await this.getGuild();
-    const channel = guild.channels.fetch(channelId);
-
-    if (!channel) return null;
-    return channel;
-  }
-
-  public async join(channel: Channel) {
-    if (!channel) return;
-    if (!channel.isVoiceBased()) return;
-
+  public async join(channel: VoiceBasedChannel) {
     //if (guild.members.me.voice.channelId !== channelId) {
     //  await this.clear();
     //}
@@ -50,8 +34,8 @@ export class VoicePresence {
     });
   }
 
-  public async enqueue(link: string) {
-    this.queue.push(link);
+  public async enqueue(video: YoutubeVideo) {
+    this.queue.push(video);
 
     // If queue was empty, play next
     if (this.queue.length === 1) {
@@ -62,10 +46,11 @@ export class VoicePresence {
   public async next(): Promise<void> {
     if (this.queue.length === 0) {
       this.leave();
+      return;
     }
 
-    const link = this.queue.shift();
-    const stream = YouTube.getAudioStream(link);
+    const video = this.queue.shift();
+    const stream = YouTube.getAudioStream(video.url);
     const resource = createAudioResource(stream);
 
     const connection = getVoiceConnection(this.guild);
@@ -77,6 +62,12 @@ export class VoicePresence {
       VoicePresence.onStageChange(this, state);
     });
     player.play(resource);
+
+    Bot.setStatus({
+      name: video.title,
+      type: ActivityType.Listening,
+      url: video.url,
+    });
   }
 
   public async leave(): Promise<void> {
