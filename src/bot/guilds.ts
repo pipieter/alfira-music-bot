@@ -6,8 +6,9 @@ import {
   Snowflake,
   VoiceBasedChannel,
 } from "discord.js";
-import { VoicePresence } from "./voice";
+
 import { logger } from "../logger";
+import { VoicePresence } from "./voice";
 
 class GuildPresence {
   public readonly id: Snowflake;

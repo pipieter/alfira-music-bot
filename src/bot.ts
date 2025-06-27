@@ -1,6 +1,5 @@
 import {
   ActivitiesOptions,
-  ButtonInteraction,
   Client,
   CommandInteraction,
   Events,
@@ -13,23 +12,17 @@ import { logger } from "./logger";
 import { Guilds } from "./bot/guilds";
 import { CommandInteractionHandlers } from "./handlers";
 
-export class BotClient {
-  public readonly client: Client;
-
+class BotClient extends Client {
   constructor() {
     const intents = new IntentsBitField();
     intents.add(IntentsBitField.Flags.Guilds);
     intents.add(IntentsBitField.Flags.GuildVoiceStates);
     intents.add(IntentsBitField.Flags.GuildMembers);
 
-    this.client = new Client({ intents: intents });
+    super({ intents });
 
-    this.client.on(Events.ClientReady, this.onClientReady);
-    this.client.on(Events.InteractionCreate, this.onInteraction);
-  }
-
-  public get() {
-    return this.client;
+    this.on(Events.ClientReady, this.onClientReady);
+    this.on(Events.InteractionCreate, this.onInteraction);
   }
 
   public async run() {
@@ -41,7 +34,7 @@ export class BotClient {
     }
 
     logger.info("Starting bot.");
-    this.client.login(token);
+    this.login(token);
   }
 
   private getToken() {
@@ -102,7 +95,7 @@ export class BotClient {
   }
 
   public setStatus(status: ActivitiesOptions) {
-    this.client.user.setActivity(status);
+    this.user.setActivity(status);
   }
 }
 

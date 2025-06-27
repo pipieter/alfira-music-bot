@@ -1,5 +1,5 @@
-import { Guild, User, VoiceBasedChannel } from "discord.js";
 import { getVoiceConnection } from "@discordjs/voice";
+import { Guild, User, VoiceBasedChannel } from "discord.js";
 
 export async function GetUserVoiceChannel(
   user: User,

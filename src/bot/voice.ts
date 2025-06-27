@@ -7,10 +7,8 @@ import {
   getVoiceConnection,
   joinVoiceChannel,
 } from "@discordjs/voice";
-import { ActivityType, Snowflake, VoiceBasedChannel } from "discord.js";
-
+import { Snowflake, VoiceBasedChannel } from "discord.js";
 import { YouTube, YouTubeVideo } from "./youtube";
-import { Bot } from "../bot";
 
 export class VoicePresence {
   private readonly guild: Snowflake;
@@ -62,12 +60,6 @@ export class VoicePresence {
       VoicePresence.onStageChange(this, state);
     });
     player.play(resource);
-
-    Bot.setStatus({
-      name: video.title,
-      type: ActivityType.Listening,
-      url: video.url,
-    });
   }
 
   public async leave(): Promise<void> {
