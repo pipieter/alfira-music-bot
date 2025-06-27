@@ -1,4 +1,4 @@
-# Dunes Bot
+# Alfira Music Bot
 
 ## Installation
 
