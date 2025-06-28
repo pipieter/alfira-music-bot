@@ -11,8 +11,12 @@ import {
 import DisTube from "distube";
 import { logging } from "./logging";
 import { PlayCommand } from "./commands/play";
+import { QueueCommand } from "./commands/queue";
 
-const commands = new Collection([["play", new PlayCommand()]]);
+const commands = new Collection([
+  ["play", new PlayCommand()],
+  ["queue", new QueueCommand()],
+]);
 
 export class Bot extends Client {
   public readonly distube: DisTube;
@@ -57,6 +61,9 @@ export class Bot extends Client {
 
     const command = commands.get(interaction.commandName);
     if (command) {
+      logging.info(
+        `${interaction.user.username} => /${interaction.commandName} ${JSON.stringify(interaction.options)}`
+      );
       return command.execute(interaction, this);
     } else {
       logging.error(

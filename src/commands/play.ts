@@ -29,10 +29,6 @@ export class PlayCommand extends Command {
     const search = interaction.options.getString("search");
     const results = await YouTube.getSearchResults(search, 1);
 
-    logging.info(
-      `${interaction.user.username} => /${interaction.commandName} ${JSON.stringify(interaction.options)}`
-    );
-
     if (results.length === 0) {
       logging.warn(`No results found for '${search}'.`);
       await interaction.reply(`No results found for ${search}`);
@@ -47,7 +43,7 @@ export class PlayCommand extends Command {
     embed.setAuthor({ name: "Added to queue", iconURL: interaction.user.avatarURL() });
     embed.setThumbnail(result.thumbnail);
     embed.setURL(result.url);
-    embed.setColor("#5391ba");
+    embed.setColor(this.color);
     embed.addFields([{ name: "Channel", value: result.channel }]);
     embed.addFields([{ name: "Duration", value: result.length }]);
 
