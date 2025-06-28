@@ -1,4 +1,5 @@
 import { CommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
+
 import { Bot } from "../bot";
 import { Command } from "./command";
 
