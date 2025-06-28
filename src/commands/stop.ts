@@ -17,6 +17,7 @@ export class StopCommand extends Command {
     if (!interaction.isChatInputCommand()) return;
 
     const queue = bot.distube.getQueue(interaction.guild);
+    const count = queue.songs.length;
 
     if (!queue || queue.songs.length === 0) {
       const embed = new EmbedBuilder();
@@ -28,7 +29,7 @@ export class StopCommand extends Command {
       const embed = new EmbedBuilder();
       embed.setTitle("Clearing all songs.");
       embed.setColor(this.color);
-      embed.setDescription(`${queue.songs.length} songs cleared.`);
+      embed.setDescription(`${count} song${count === 1 ? "" : "s"} cleared.`);
 
       queue.stop();
       bot.distube.voices.get(interaction.guild.id).leave();
