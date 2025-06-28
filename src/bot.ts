@@ -12,10 +12,12 @@ import DisTube from "distube";
 import { logging } from "./logging";
 import { PlayCommand } from "./commands/play";
 import { QueueCommand } from "./commands/queue";
+import { StopCommand } from "./commands/stop";
 
 const commands = new Collection([
   ["play", new PlayCommand()],
   ["queue", new QueueCommand()],
+  ["stop", new StopCommand()],
 ]);
 
 export class Bot extends Client {

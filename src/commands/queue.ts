@@ -63,10 +63,9 @@ export class QueueCommand extends Command {
       const formatted = queued.map(
         (s) => `- ${s.formattedDuration.padStart(5, " ")} | [${s.name}](${s.url})`
       );
-      const duration = queued.map((s) => s.duration).reduce((prev, curr) => prev + curr, 0);
 
       embed.addFields([{ name: "Queued", value: formatted.join("\n") }]);
-      embed.addFields([{ name: "Duration", value: formatDuration(duration) }]);
+      embed.addFields([{ name: "Duration", value: formatDuration(queue.duration) }]);
     } else {
       embed.addFields([{ name: "Queued", value: "No songs queued." }]);
     }
