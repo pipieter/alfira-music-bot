@@ -13,11 +13,13 @@ import { logging } from "./logging";
 import { PlayCommand } from "./commands/play";
 import { QueueCommand } from "./commands/queue";
 import { StopCommand } from "./commands/stop";
+import { SkipCommand } from "./commands/skip";
 
 const commands = new Collection([
   ["play", new PlayCommand()],
   ["queue", new QueueCommand()],
   ["stop", new StopCommand()],
+  ["skip", new SkipCommand()],
 ]);
 
 export class Bot extends Client {
